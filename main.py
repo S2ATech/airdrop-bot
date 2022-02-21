@@ -338,19 +338,16 @@ def amo_with(message):
         return
 
 server = Flask(__name__)
-
-
+    @server.route("/bot", methods=['POST'])
+    def getMessage():
+        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+        return "!", 200
+        
         @server.route("/")
         def webhook():
             bot.remove_webhook()
-            bot.set_webhook(url='https://airdrophacktech.herokuapp.com')
+            bot.set_webhook(url=f"https://airdrophacktech.herokuapp.com/{BOT_TOKEN}")
             return "I'm alive and waiting for your messages", 200
-      
-        @server.route("/", methods=['POST'])
-        def getMessage():
-            bot.process_new_updates(
-                [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-            return "I'm looking for answer.", 200
 
         server.run(host='0.0.0.0', port=5000)
 
