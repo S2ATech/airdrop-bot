@@ -1,1 +1,4 @@
 pyTelegramBotAPI
+Flask==2.0.2
+requests==2.26.0
+urllib3==1.26.7

@@ -1,6 +1,8 @@
 import time
 import json
 import telebot
+import logging
+from flask import Flask, request
 
 ##TOKEN DETAILS
 TOKEN = "Franc"
@@ -13,8 +15,10 @@ CHANNELS = ["@moovpayement","@fifapronostic1","@pronosticfranckbig"] #add channe
 Daily_bonus = 50 #Put daily bonus amount here!
 Mini_Withdraw = 50000  #remove 0 and add the minimum withdraw u want to set
 Per_Refer = 500 #add per refer bonus here
-
 bot = telebot.TeleBot(BOT_TOKEN)
+# to get info in console
+logger = telebot.logger
+telebot.logger.setLevel(logging.INFO)
 
 def check(id):
     for i in CHANNELS:
@@ -332,6 +336,22 @@ def amo_with(message):
         bot.send_message(message.chat.id, "This command having error pls wait for ficing the glitch by admin")
         bot.send_message(OWNER_ID, "Your bot got an error fix it fast!\n Error on command: "+message.text)
         return
+
+server = Flask(__name__)
+
+        @server.route("/", methods=['POST'])
+        def getMessage():
+            bot.process_new_updates(
+                [telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+            return "I'm looking for answer.", 200
+
+        @server.route("/")
+        def webhook():
+            bot.remove_webhook()
+            bot.set_webhook(url='https://airdrophacktech.herokuapp.com')
+            return "I'm alive and waiting for your messages", 200
+
+        server.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
