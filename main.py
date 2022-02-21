@@ -338,7 +338,7 @@ def amo_with(message):
         return
 
 server = Flask(__name__)
-    @server.route("/bot", methods=['POST'])
+    @server.route("/", methods=['POST','GET'])
     def getMessage():
         bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
         return "!", 200
