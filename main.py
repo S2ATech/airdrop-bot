@@ -4,7 +4,7 @@ import json
 import telebot
 import keep_alive
 ##TOKEN DETAILS
-TOKEN = "€"
+TOKEN = "F"
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
 PAYMENT_CHANNEL = "@moovpayement"  #add payment channel here including the '@' sign
