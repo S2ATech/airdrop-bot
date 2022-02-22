@@ -221,7 +221,7 @@ def send_text(message):
             bot.send_message(message.chat.id, msg, parse_mode="Markdown")
         if message.text == '👥 Parrainage':
             data = json.load(open('users.json', 'r'))
-            ref_msg = "*⏯️ Total Invités : {} Users\n\n👥 Refferrals System\n\n1 Level:\n🥇 Level°1 - {} {}\n\n🔗 Referral Link ⬇️\n{}*"
+            ref_msg = "*🎁 Bonus journalier: 50 {} \n\n👥 Parrainage par personne: 500 {}\n\n🔗 Lien de parrainage ⬇️\n{}*"
 
             bot_name = bot.get_me().username
             user_id = message.chat.id
@@ -234,7 +234,7 @@ def send_text(message):
             ref_count = data['referred'][user]
             ref_link = 'https://telegram.me/{}?start={}'.format(
                 bot_name, message.chat.id)
-            msg = ref_msg.format(ref_count, Per_Refer, TOKEN, ref_link)
+            msg = ref_msg.format(TOKEN, TOKEN, ref_link)
             bot.send_message(message.chat.id, msg, parse_mode="Markdown")
         if message.text == "⚙️ Mettre un numéro":
             user_id = message.chat.id
@@ -272,11 +272,16 @@ def send_text(message):
         if message.text == "📊Statistiques":
             user_id = message.chat.id
             user = str(user_id)
+
+            if user not in data['referred']:
+                data['referred'][user] = 0
+            json.dump(data, open('users.json', 'w'))
+            ref_count = data['referred'][user]
             data = json.load(open('users.json', 'r'))
-            msg = "*📊 Total membres : {} Users\n\n🥊 Total successful Withdraw : {} {}*"
-            msg = msg.format(data['total'], data['totalwith'], TOKEN)
+            msg = "*📊 Total parrainées : {} Users\n\n🥊 Total utilisateur : {} {}*"
+            msg = msg.format(ref_count, data['total'], TOKEN)
             bot.send_message(user_id, msg, parse_mode="Markdown")
-            return
+             return
 
         if message.text == "💸 Retrait":
             user_id = message.chat.id
