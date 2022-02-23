@@ -173,7 +173,7 @@ def query_handler(call):
             else:
                 bot.answer_callback_query(
                     callback_query_id=call.id,
-                    text='❌  ous devez rejoindre les canaux')
+                    text='❌  Vous devez rejoindre les canaux')
                 bot.delete_message(call.message.chat.id,
                                    call.message.message_id)
                 markup = telebot.types.InlineKeyboardMarkup()
@@ -219,8 +219,7 @@ def send_text(message):
                                 TOKEN)
             bot.send_message(message.chat.id, msg, parse_mode="Markdown")
         if message.text == '👥 Parrainage':
-            data = json.load(open('users.json', 'r'))
-            ref_msg = "*🛡️Ganez de l'argent avec ce parrainage pas obligatoire\n🎁 Bonus journalier : 5 {} \n\n👥Par parrainage 50 {}\n\n🔗 Lien du bot ⬇️\n{}*"
+            ref_msg = "*🛡️Ganez de l'argent avec ce bot parrainage pas obligatoire\n🎁 Bonus journalier : 5 {}\n\n👥Par parrainage 50 {}\n\n🔗 Lien du bot ⬇️\n{}*"
 
             bot_name = bot.get_me().username
             user_id = message.chat.id
@@ -267,7 +266,7 @@ def send_text(message):
             user_id = message.chat.id
             user = str(user_id)
             data = json.load(open('users.json', 'r'))
-            msg = "*📊 Total parrainées : {} Users\n\n🥊 Total successful Withdraw : {} {}*"
+            msg = "*📊 Total parrainées : {} Users\n\n🥊 Total Retirer : {} {}*"
             msg = msg.format(data['total'], data['totalwith'], TOKEN)
             bot.send_message(user_id, msg, parse_mode="Markdown")
             return
