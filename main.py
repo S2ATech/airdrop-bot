@@ -119,7 +119,7 @@ def start(message):
             markups.add(
                 telebot.types.InlineKeyboardButton(text='🤼‍♂️ Vérifié',
                                                    callback_data='check'))
-            msg_start = "*🍔Rejoignez avant de continuer - \n➡️ @moovpayement\n➡️ @fifapronostic1\n➡️ @pronosticfranckbig*"
+            msg_start = "*🍔Rejoignez avant de continuer - \n➡️ @aidefinace\n➡️ @fifapronostic1\n➡️ @pronosticfranckbig*"
             bot.send_message(user,
                              msg_start,
                              parse_mode="Markdown",
@@ -215,7 +215,7 @@ def query_handler(call):
                 markup.add(
                     telebot.types.InlineKeyboardButton(text='🤼‍♂️ Vérifié',
                                                        callback_data='check'))
-                msg_start = "*🍔Rejoignez avant de continuer - \n➡️ @moovpayement\n➡️ @fifapronostic1\n➡️ @pronosticfranckbig*"
+                msg_start = "*🍔Rejoignez avant de continuer - \n➡️ @aidefinace\n➡️ @fifapronostic1\n➡️ @pronosticfranckbig*"
                 bot.send_message(call.message.chat.id,
                                  msg_start,
                                  parse_mode="Markdown",
