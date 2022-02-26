@@ -7,8 +7,8 @@ import keep_alive
 TOKEN = "€"
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
-PAYMENT_CHANNEL = "@moovpayement"  #add payment channel here including the '@' sign
-OWNER_ID = 1331194466  #write owner's user id here.. get it from @MissRose_Bot by /id
+PAYMENT_CHANNEL = "@aidefinace"  #add payment channel here including the '@' sign
+OWNER_ID = 1331194466  #write r's user id here.. get it from @MissRose_Bot by /id
 CHANNELS = open('canaux.txt', 'r', encoding='utf-8').read().split('\n')
  #add channels to be checked here in the format - ["Channel 1", "Channel 2"]
 #you can add as many channels here and also add the '@' sign before channel username
