@@ -4,15 +4,16 @@ import json
 import telebot
 import keep_alive
 ##TOKEN DETAILS
-TOKEN = "F"
+TOKEN = "€"
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
 PAYMENT_CHANNEL = "@moovpayement"  #add payment channel here including the '@' sign
-OWNER_ID = 1331194466  #write owner's user id here.. get it from @MissRose_Bot by /i
-CHANNELS = ["@moovpayement","@fifapronostic1","@pronosticfranckbig"]  #add channels to be checked here in the format - ["Channel 1", "Channel 2"]
+OWNER_ID = 1331194466  #write owner's user id here.. get it from @MissRose_Bot by /id
+CHANNELS = open('canaux.txt', 'r', encoding='utf-8').read().split('\n')
+ #add channels to be checked here in the format - ["Channel 1", "Channel 2"]
 #you can add as many channels here and also add the '@' sign before channel username
-Daily_bonus = 50  #Put daily bonus amount here!
-Mini_Withdraw = 500  #remove 0 and add the minimum withdraw u want to set
+Daily_bonus = 10  #Put daily bonus amount here!
+Mini_Withdraw = 1000  #remove 0 and add the minimum withdraw u want to set
 Per_Refer = 50  #add per refer bonus here
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -25,21 +26,31 @@ def check(id):
             return False
     return True
 
-
 bonus = {}
 
-
 def menu(id):
-    keyboard = telebot.types.ReplyKeyboardMarkup(True)
-    keyboard.row('🆔 Compte')
-    keyboard.row('👥 Parrainage', '🎁 Bonus', '💸 Retrait')
-    keyboard.row('⚙️ Mettre un numéro', '📊Statistiques')
-    bot.send_message(id,
+   admins = open('admins.txt','r',encoding='utf-8').read().split('\n')
+   if str(id) in admins:
+     keyboard = telebot.types.ReplyKeyboardMarkup(True)
+     keyboard.row('🆔 Compte')
+     keyboard.row('👥 Parrainage', '🎁 Bonus', '💸 Retrait')
+     keyboard.row('⚙️ Mettre un numéro', '📊Statistiques')
+     keyboard.row('🔀 Canaux', '👬 Utilisateur', '📧 Message')
+     bot.send_message(id,
                      "*🏡 Menu ⬇️*",
                      parse_mode="Markdown",
                      reply_markup=keyboard)
 
-
+   else:
+     keyboard = telebot.types.ReplyKeyboardMarkup(True)
+     keyboard.row('🆔 Compte')
+     keyboard.row('👥 Parrainage', '🎁 Bonus', '💸 Retrait')
+     keyboard.row('⚙️ Mettre un numéro', '📊Statistiques')
+     bot.send_message(id,
+                     "*🏡 Menu ⬇️*",
+                     parse_mode="Markdown",
+                     reply_markup=keyboard)
+                     
 @bot.message_handler(commands=['start'])
 def start(message):
     try:
@@ -124,7 +135,31 @@ def start(message):
             message.text)
         return
 
-
+@bot.message_handler(commands=['send'])
+def send(message):
+    admins = open('admins.txt', 'r', encoding='utf-8').read().split('\n')
+    if str(message.chat.id) in admins and len(message.text.split()) >= 2:
+        cache = ''
+        for text in message.text.split()[1::]:
+            cache+=text+' '
+        a = 0
+        n = 0
+        users = open('users.txt', 'r', encoding='utf-8').read().split(',\n')
+        for user in users:
+            if user != '':
+                try:
+                    keyboard = telebot.types.ReplyKeyboardMarkup(True)
+                    keyboard.row('➡️ continuer')
+                    bot.send_message(user, cache, reply_markup=keyboard)
+                    a+=1
+                except Exception as e:
+                    users.remove(user)
+                    with open('users.txt', 'w', encoding='utf-8') as f:
+                        for u in users:
+                            f.write(f'{u}\n')
+                n+=1
+        bot.send_message(message.chat.id, f'utilisateur: {n}\nMessage envoyer avec succès: {a}')
+        ''
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
     try:
@@ -196,8 +231,8 @@ def query_handler(call):
             call.data)
         return
 
-
 @bot.message_handler(content_types=['text'])
+
 def send_text(message):
     try:
         if message.text == '🆔 Compte':
@@ -261,7 +296,6 @@ def send_text(message):
                     "❌*Vous pour recevoir un autre bonus dans 24h*",
                     parse_mode="markdown")
             return
-
         if message.text == "📊Statistiques":
             user_id = message.chat.id
             user = str(user_id)
@@ -270,7 +304,6 @@ def send_text(message):
             msg = msg.format(data['total'], data['totalwith'], TOKEN)
             bot.send_message(user_id, msg, parse_mode="Markdown")
             return
-
         if message.text == "💸 Retrait":
             user_id = message.chat.id
             user = str(user_id)
@@ -300,6 +333,36 @@ def send_text(message):
                     f"_❌ Votre solde dois être supérieur ou égal à {Mini_Withdraw} {TOKEN} pour retirer_",
                     parse_mode="Markdown")
                 return
+        if message.text == "🔀 Canaux":
+            n = CHANNELS
+            canal = ""
+            for i in n:
+              canal = canal + str(i) + "\n"
+            cn_msg = "*Canaux\n"+canal+"\nVeuillez saisir les nouveaux canaux avec votre canal de payement "+PAYMENT_CHANNEL+"\nFORMAT:\n"+PAYMENT_CHANNEL+"\n@Canal2\n@canal3\n@canal4\n NB: Ajouter le bot dans les canaux avant*"
+            keyboard = telebot.types.ReplyKeyboardMarkup(True)
+            keyboard.row('🚫 Cancel')
+            bot.send_message(message.chat.id,cn_msg,parse_mode="Markdown",reply_markup=keyboard)
+            bot.register_next_step_handler(message,cn_set)
+        if message.text == '👬 Utilisateur':
+            data = json.load(open('users.json', 'r'))
+            dic = data['id']
+            keys = list(dic.keys())
+            numbers = keys
+            users_id = ""
+            for i in numbers:
+              users_id = users_id + str(i)+"\n"
+            user_msg = "*"+users_id+"👮 Utilisateur : {}*"
+            msg = user_msg.format(data['total'])
+            bot.send_message(message.chat.id, msg, parse_mode="Markdown")
+        if message.text == '📧 Message':
+            data = json.load(open('users.json', 'r'))
+            msg = '*Entrez votre message à envoyer avec la commande /send au début\nFormat:\n/send votre message*'
+            bot.send_message(message.chat.id,msg,parse_mode="Markdown")
+            return
+        if message.text == '➡️ continuer':
+            bot.send_message(message.chat.id,'*Cliquez sur /start pour continuer*',parse_mode="Markdown")
+        else:
+            return
     except:
         bot.send_message(
             message.chat.id,
@@ -310,7 +373,6 @@ def send_text(message):
             "Your bot got an error fix it fast!\n Error on command: " +
             message.text)
         return
-
 
 def trx_address(message):
     try:
@@ -343,7 +405,6 @@ def trx_address(message):
             "Your bot got an error fix it fast!\n Error on command: " +
             message.text)
         return
-
 
 def amo_with(message):
     try:
@@ -416,6 +477,32 @@ def amo_with(message):
             "Your bot got an error fix it fast!\n Error on command: " +
             message.text)
         return
+
+def cn_set(message):
+    try:
+        if message.text == "🚫 Cancel":
+            return menu(message.chat.id)
+        if '\n' and '@' in message.text:
+            open('canaux.txt','w' ,encoding = 'utf-8').write(message.text)
+            bot.send_message(message.chat.id,'*vos sont mises à jour avec succès.*',parse_mode="Markdown")
+        else:
+            bot.send_message(message.chat.id,'*suivez correctement le format*',parse_mode="Markdown")
+    except:
+        bot.send_message(
+            message.chat.id,
+            "This command having error pls wait for ficing the glitch by admin"
+        )
+        bot.send_message(
+            OWNER_ID,
+            "Your bot got an error fix it fast!\n Error on command: " +
+            message.text)
+        return
+
+def send_r(message):
+  if message.text == '🚫 Cancel':
+    return menu(message.chat.id)
+  else:
+    return
 
 keep_alive.keep_alive()
 bot.polling(none_stop=True)
